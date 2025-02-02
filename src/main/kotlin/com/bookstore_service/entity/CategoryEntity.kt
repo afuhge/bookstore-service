@@ -8,8 +8,9 @@ import java.util.*
 data class CategoryEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID?,
+    val id: UUID? = null,
+    @Column(unique = true)
     var name: String,
     @OneToMany( mappedBy = "category",)
-    val books: MutableList<BookEntity>,
+    val books: MutableList<BookEntity> = mutableListOf(),
 )

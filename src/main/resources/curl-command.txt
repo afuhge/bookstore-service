@@ -1,0 +1,51 @@
+###################################################################
+
+CREATE BOOK:
+curl -i \
+-d '{"title":"Twisted lies", "pages": 525, "spice": 3, "categoryId": "1375da4b-9b00-48f2-96b8-48395984b385"}' \
+-H "Content-Type: application/json" \
+-X POST http://localhost:8080/api/v1/books
+
+GET BOOK:
+curl -i -X GET http://localhost:8080/api/v1/books/<id>
+
+GET ALL BOOKS:
+curl -i -X GET http://localhost:8080/api/v1/books
+
+DELETE BOOK:
+curl -i -X DELETE http://localhost:8080/api/v1/books/2c441c34-937d-4df5-9e1d-e8b1ea5741fc
+
+DELETE BOOKS:
+curl -i -X DELETE http://localhost:8080/api/v1/books
+
+PUT book:
+curl -i \
+-d '{"title":"Twisted lies 2", "pages": 123, "spice": 69, "categoryId": "887c29a3-4efd-4798-9284-9332f166764d"}' \
+-H "Content-Type: application/json" \
+-X PUT http://localhost:8080/api/v1/books/1b3c9283-4f03-407a-9521-0cc7fe84b3ba
+
+####################################################################
+
+CREATE CATEGORY
+curl -i \
+-d '{"name":"Roman"}' \
+-H "Content-Type: application/json" \
+-X POST http://localhost:8080/api/v1/categories
+
+GET category:
+curl -i -X GET http://localhost:8080/api/v1/categories/<id>
+
+GET ALL categories:
+curl -i -X GET http://localhost:8080/api/v1/categories
+
+DELETE category:
+curl -i -X DELETE http://localhost:8080/api/v1/categories/id
+
+DELETE categories:
+curl -i -X DELETE http://localhost:8080/api/v1/categories
+
+PUT category:
+curl -i \
+-d '{"name":"Thriller"}' \
+-H "Content-Type: application/json" \
+-X PUT http://localhost:8080/api/v1/categories/39862ecb-8c22-479d-8a10-6f0609e1e8c9

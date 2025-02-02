@@ -8,11 +8,12 @@ import java.util.UUID
 data class BookEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID?,
+    val id: UUID? = null,
+    @Column(unique = true)
     var title: String,
     @ManyToOne (fetch = FetchType.LAZY) // fetch stuff nur wenn benötigt
     @JoinColumn(name = "category_id", nullable = true) // category kann leer sein
     var category: CategoryEntity? = null,
-    var pages: Int,
-    var spice: Int,
+    var pages: Int?,
+    var spice: Int?,
 )
