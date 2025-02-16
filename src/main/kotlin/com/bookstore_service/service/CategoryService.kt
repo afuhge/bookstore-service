@@ -82,7 +82,6 @@ class CategoryService (val categoryRepository : CategoryRepository, val bookRepo
        return CategoryResponseDTO(categoryEntity.id!!, categoryEntity.name, categoryEntity.books.map{ book -> book.toBookResponseDTO() }.toMutableList());
     }
 
-    private fun BookEntity.toBookResponseDTO(): BookResponseDTO {
-        return BookResponseDTO(this.id!!, this.title, null, this.pages, this.spice)
-    }
+    private fun BookEntity.toBookResponseDTO(): BookResponseDTO =
+        BookResponseDTO(this.id!!, this.title, null, this.pages, this.spice)
 }

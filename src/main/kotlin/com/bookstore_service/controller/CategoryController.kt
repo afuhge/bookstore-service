@@ -46,9 +46,8 @@ class CategoryController (val categoryService: CategoryService){
     ])
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@Validated @RequestBody category: CategoryCreateRequestDTO): CategoryResponseDTO {
-        return categoryService.addCategory(category);
-    }
+    fun create(@Validated @RequestBody category: CategoryCreateRequestDTO): CategoryResponseDTO =
+         categoryService.addCategory(category);
 
     @Operation(summary = "Get a category by its id")
     @ApiResponses(value = [
@@ -73,9 +72,8 @@ class CategoryController (val categoryService: CategoryService){
     ])
     @GetMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    fun getCategory(@Parameter(description = "Category id") @PathVariable categoryId: UUID): CategoryResponseDTO {
-      return categoryService.getCategory(categoryId);
-    }
+    fun getCategory(@Parameter(description = "Category id") @PathVariable categoryId: UUID): CategoryResponseDTO =
+       categoryService.getCategory(categoryId);
 
     @Operation(summary = "Get all categories")
     @ApiResponse(
@@ -91,9 +89,8 @@ class CategoryController (val categoryService: CategoryService){
     )
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getAllCategories(): List<CategoryResponseDTO> {
-        return categoryService.getAllCategories();
-    }
+    fun getAllCategories(): List<CategoryResponseDTO> =
+         categoryService.getAllCategories();
 
     @Operation(summary = "Delete a category by its id")
     @ApiResponses(value = [
@@ -112,16 +109,14 @@ class CategoryController (val categoryService: CategoryService){
     ])
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteCategory(@Parameter(description = "Category id") @PathVariable categoryId: UUID) {
+    fun deleteCategory(@Parameter(description = "Category id") @PathVariable categoryId: UUID) =
         categoryService.deleteCategory(categoryId);
-    }
 
     @Operation(summary = "Delete all categories")
     @DeleteMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteCategory() {
+    fun deleteCategory() =
         categoryService.deleteAllCategories();
-    }
 
     @Operation(summary = "Update a specific category")
     @ApiResponses(value = [
@@ -155,7 +150,6 @@ class CategoryController (val categoryService: CategoryService){
     ])
     @PutMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateCategory(@Parameter(description = "Category id") @PathVariable categoryId: UUID, @Validated @RequestBody updateRequest: CategoryCreateRequestDTO): CategoryResponseDTO {
-        return categoryService.updateCategory(categoryId, updateRequest);
-    }
+    fun updateCategory(@Parameter(description = "Category id") @PathVariable categoryId: UUID, @Validated @RequestBody updateRequest: CategoryCreateRequestDTO): CategoryResponseDTO =
+         categoryService.updateCategory(categoryId, updateRequest);
 }

@@ -55,9 +55,8 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
         bookRepository.deleteById(bookId);
     }
 
-    fun deleteBooks() {
+    fun deleteBooks() =
         bookRepository.deleteAll();
-    }
 
     fun updateBook(bookId: UUID, updateRequest: BookCreateRequestDTO): BookResponseDTO {
         // Check if the title already exists in the database for a different book
@@ -86,7 +85,6 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
     }
 
 
-    private fun CategoryEntity.toCategoryResponseDTO(): CategoryResponseDTO {
-        return CategoryResponseDTO(this.id!!, this.name, null)
-    }
+    private fun CategoryEntity.toCategoryResponseDTO(): CategoryResponseDTO =
+        CategoryResponseDTO(this.id!!, this.name, null)
 }

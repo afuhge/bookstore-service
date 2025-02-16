@@ -26,41 +26,40 @@ import java.util.*
 class BookController (val bookService: BookService){
 
     @Operation(summary = "Create a new book")
-   @ApiResponses(
-       value = [
-           ApiResponse(
-               responseCode = "201", description = "Created book",
-               content = [
-                   Content(
-                       mediaType = "application/json",
-                       schema = Schema(implementation = BookResponseDTO::class)
-                   )
-               ]
-           ),
-           ApiResponse(
+       @ApiResponses(
+           value = [
+               ApiResponse(
+                   responseCode = "201", description = "Created book",
+                   content = [
+                       Content(
+                           mediaType = "application/json",
+                           schema = Schema(implementation = BookResponseDTO::class)
+                       )
+                   ]
+               ),
+               ApiResponse(
                    responseCode = "400", description = "Bad request: A book with the title already exists.",
-           content = [
-               Content(
-                   mediaType = "application/json",
-                   schema = Schema(implementation = IllegalArgumentException::class)
-               )
+                   content = [
+                       Content(
+                           mediaType = "application/json",
+                           schema = Schema(implementation = IllegalArgumentException::class)
+                       )
+                   ]
+               ),
+               ApiResponse(
+                   responseCode = "404", description = "Not found: Category not found with id",
+                   content = [
+                       Content(
+                           mediaType = "application/json",
+                           schema = Schema(implementation = CategoryNotFoundException::class)
+                       )
+                   ])
            ]
-   )
-           , ApiResponse(
-               responseCode = "404", description = "Not found: Category not found with id",
-               content = [
-                   Content(
-                       mediaType = "application/json",
-                       schema = Schema(implementation = CategoryNotFoundException::class)
-                   )
-               ])
-       ]
-   )
+       )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun addBook(@RequestBody @Validated book: BookCreateRequestDTO): BookResponseDTO {
-        return bookService.addBook(book);
-    }
+    fun addBook(@RequestBody @Validated book: BookCreateRequestDTO): BookResponseDTO =
+        bookService.addBook(book);
 
     @Operation(summary = "Get a book by its id")
     @ApiResponses(
@@ -73,8 +72,8 @@ class BookController (val bookService: BookService){
                         schema = Schema(implementation = BookResponseDTO::class)
                     )
                 ]
-            )
-            , ApiResponse(
+            ),
+            ApiResponse(
                 responseCode = "404", description = "Not found: Book not found with id",
                 content = [
                     Content(
@@ -86,9 +85,8 @@ class BookController (val bookService: BookService){
     )
     @GetMapping("/{bookId}")
     @ResponseStatus(HttpStatus.OK)
-    fun getBookById(@Parameter(description = "Book id") @PathVariable("bookId") bookId: UUID): BookResponseDTO {
-        return bookService.getBookById(bookId)
-    }
+    fun getBookById(@Parameter(description = "Book id") @PathVariable("bookId") bookId: UUID): BookResponseDTO =
+        bookService.getBookById(bookId)
 
     @Operation(summary = "Get all books")
     @ApiResponse(
@@ -104,9 +102,9 @@ class BookController (val bookService: BookService){
     )
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    fun getAllBooks(@Parameter(name = "title", description = "Book title", example = "Twisted lies" ) @RequestParam(required = false) title: String?, @Parameter(name = "category", description = "Category name", example = "Roman" ) @RequestParam(required = false) category: String?, @Parameter(name = "spice", description = "How spicy this book is", example = "3" ) @RequestParam(required = false)  @Min(0) @Max(5) spice: Int?): List<BookResponseDTO> {
-        return bookService.getAllBooks(title, category, spice)
-    }
+    fun getAllBooks(@Parameter(name = "title", description = "Book title", example = "Twisted lies" ) @RequestParam(required = false) title: String?, @Parameter(name = "category", description = "Category name", example = "Roman" ) @RequestParam(required = false) category: String?, @Parameter(name = "spice", description = "How spicy this book is", example = "3" ) @RequestParam(required = false)  @Min(0) @Max(5) spice: Int?): List<BookResponseDTO> =
+        bookService.getAllBooks(title, category, spice)
+
 
     @Operation(summary = "Delete a book by its id")
     @ApiResponses(
@@ -132,9 +130,9 @@ class BookController (val bookService: BookService){
     @Operation(summary = "Delete all books")
     @DeleteMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteAllBooks() {
-        return bookService.deleteBooks();
-    }
+    fun deleteAllBooks() =
+        bookService.deleteBooks();
+
 
     @Operation(summary = "Update a specific book")
     @ApiResponses(
@@ -169,7 +167,6 @@ class BookController (val bookService: BookService){
     )
     @PutMapping("/{bookId}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateBook(@Parameter(description = "Book id") @PathVariable("bookId") bookId: UUID, @RequestBody @Validated book: BookCreateRequestDTO): BookResponseDTO {
-        return bookService.updateBook(bookId, book);
-    }
+    fun updateBook(@Parameter(description = "Book id") @PathVariable("bookId") bookId: UUID, @RequestBody @Validated book: BookCreateRequestDTO): BookResponseDTO =
+        bookService.updateBook(bookId, book);
 }
