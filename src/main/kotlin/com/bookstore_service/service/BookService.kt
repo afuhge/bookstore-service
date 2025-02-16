@@ -5,6 +5,8 @@ import com.bookstore_service.dto.BookResponseDTO
 import com.bookstore_service.dto.CategoryResponseDTO
 import com.bookstore_service.entity.BookEntity
 import com.bookstore_service.entity.CategoryEntity
+import com.bookstore_service.exceptions.BookNotFoundException
+import com.bookstore_service.exceptions.CategoryNotFoundException
 import com.bookstore_service.repository.BookRepository
 import com.bookstore_service.repository.CategoryRepository
 import org.springframework.stereotype.Service
@@ -19,7 +21,7 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
         }
 
         val category = book.categoryId?.let {
-            categoryRepository.findById(it).orElseThrow { Exception("Category not valid for ID: $it") }
+            categoryRepository.findById(it).orElseThrow { CategoryNotFoundException("Category not found with id: $it") }
         }
 
         val bookEntity = book.let {
@@ -32,14 +34,14 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
         }
     }
 
-    fun getAllBooks(): List<BookResponseDTO> {
-        return bookRepository.findAll().map { BookResponseDTO(it.id!!, it.title,
+    fun getAllBooks(title: String?, category: String?, spice: Int?): List<BookResponseDTO> {
+        return bookRepository.findByTitleContainingIgnoreCaseAndCategoryNameContainingIgnoreCaseAndSpiceGreaterThanEqual(title ?: "", category?: "", spice ?: 0).map { BookResponseDTO(it.id!!, it.title,
             it.category?.toCategoryResponseDTO(), it.pages, it.spice) };
     }
 
     fun getBookById(bookId: UUID): BookResponseDTO {
         val book = bookRepository.findById(bookId)
-            .orElseThrow { Exception("No book found with id $bookId") }
+            .orElseThrow { BookNotFoundException("No book found with id $bookId") }
 
         return book.let {
             BookResponseDTO(it.id!!, it.title, it.category?.toCategoryResponseDTO(), it.pages, it.spice)
@@ -48,7 +50,7 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
 
     fun deleteBook(bookId: UUID) {
         if (!bookRepository.existsById(bookId)) {
-            throw Exception("No book found with ID: $bookId")
+            throw BookNotFoundException("No book found with id: $bookId")
         }
         bookRepository.deleteById(bookId);
     }
@@ -64,10 +66,10 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
         }
 
         val book = bookRepository.findById(bookId)
-            .orElseThrow { Exception("No book found with id $bookId") }
+            .orElseThrow { BookNotFoundException("No book found with id $bookId") }
 
         val category = updateRequest.categoryId?.let {
-            categoryRepository.findById(it).orElseThrow { Exception("Category not valid for ID: $it") }
+            categoryRepository.findById(it).orElseThrow { CategoryNotFoundException("Category not found with id: $it") }
         }
 
         book.apply {

@@ -5,6 +5,7 @@ import com.bookstore_service.dto.CategoryCreateRequestDTO
 import com.bookstore_service.dto.CategoryResponseDTO
 import com.bookstore_service.entity.BookEntity
 import com.bookstore_service.entity.CategoryEntity
+import com.bookstore_service.exceptions.CategoryNotFoundException
 import com.bookstore_service.repository.BookRepository
 import com.bookstore_service.repository.CategoryRepository
 import org.springframework.stereotype.Service
@@ -28,7 +29,7 @@ class CategoryService (val categoryRepository : CategoryRepository, val bookRepo
 
     fun getCategory(id: UUID): CategoryResponseDTO {
         val category = categoryRepository.findById(id)
-            .orElseThrow { Exception("No category found with id $id") }
+            .orElseThrow { CategoryNotFoundException("No category found with id $id") }
         val books = bookRepository.findAllByCategoryId(category.id!!)
         return category.let { CategoryResponseDTO(it.id!!, it.name,  books.map{ book -> book.toBookResponseDTO() }.toMutableList()) }
     }
@@ -41,7 +42,7 @@ class CategoryService (val categoryRepository : CategoryRepository, val bookRepo
 
     fun deleteCategory(id: UUID) {
         val category = categoryRepository.findById(id)
-            .orElseThrow { Exception("Category with id $id not found.") }
+            .orElseThrow { CategoryNotFoundException("Category with id $id not found.") }
 
         // Unlink the books from the category by setting category to null
         category.books.forEach { book ->
@@ -73,7 +74,7 @@ class CategoryService (val categoryRepository : CategoryRepository, val bookRepo
         }
 
        val category = categoryRepository.findById(categoryId)
-           .orElseThrow { Exception("No category found with id $categoryId") }
+           .orElseThrow { CategoryNotFoundException("No category found with id $categoryId") }
 
        category.apply { name = updateRequest.name }
        val categoryEntity = categoryRepository.save(category)

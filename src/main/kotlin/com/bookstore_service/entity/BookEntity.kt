@@ -1,6 +1,8 @@
 package com.bookstore_service.entity
 
 import jakarta.persistence.*
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import java.util.UUID
 
 @Entity
@@ -15,5 +17,7 @@ data class BookEntity(
     @JoinColumn(name = "category_id", nullable = true) // category kann leer sein
     var category: CategoryEntity? = null,
     var pages: Int?,
+    @Min(0)
+    @Max(5)
     var spice: Int?,
 )

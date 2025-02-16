@@ -8,4 +8,9 @@ interface BookRepository : CrudRepository<BookEntity, UUID> {
     fun existsByTitleAndIdNot(title: String, id: UUID): Boolean
     fun existsByTitle(title: String): Boolean
     fun findAllByCategoryId(categoryId: UUID): MutableList<BookEntity>
+    fun findByTitleContainingIgnoreCaseAndCategoryNameContainingIgnoreCaseAndSpiceGreaterThanEqual(
+        title: String?,
+        category: String?,
+        spice: Int?
+    ):MutableList<BookEntity>
 }

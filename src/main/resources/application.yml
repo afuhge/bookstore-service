@@ -17,3 +17,8 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+springdoc:
+  swagger-ui:
+    path: /bookstore-service/swagger-ui
+  api-docs:
+    path: /bookstore-service
