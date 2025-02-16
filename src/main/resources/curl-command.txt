@@ -20,7 +20,7 @@ curl -i -X DELETE "http://localhost:8080/api/v1/books"
 
 PUT book:
 curl -i \
--d '{"title":"Twisted lies 2", "pages": 123, "spice": 69, "categoryId": "887c29a3-4efd-4798-9284-9332f166764d"}' \
+-d '{"title":"Twisted lies 2", "pages": 123, "spice": 5, "categoryId": "887c29a3-4efd-4798-9284-9332f166764d"}' \
 -H "Content-Type: application/json" \
 -X PUT "http://localhost:8080/api/v1/books/1b3c9283-4f03-407a-9521-0cc7fe84b3ba"
 
