@@ -2,7 +2,7 @@ package com.bookstore_service.service
 
 import com.bookstore_service.dto.BookCreateRequestDTO
 import com.bookstore_service.dto.BookResponseDTO
-import com.bookstore_service.dto.CategoryResponseDTO
+import com.bookstore_service.dto.CategoryBookResponseDTO
 import com.bookstore_service.entity.BookEntity
 import com.bookstore_service.entity.CategoryEntity
 import com.bookstore_service.exceptions.BookNotFoundException
@@ -30,13 +30,13 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
         val savedBook = bookRepository.save(bookEntity);
 
         return bookEntity.let {
-            BookResponseDTO(it.id!!, it.title, savedBook.category?.toCategoryResponseDTO(), it.pages, it.spice)
+            BookResponseDTO(it.id!!, it.title, savedBook.category?.toCategoryBookResponseDTO(), it.pages, it.spice)
         }
     }
 
     fun getAllBooks(title: String?, category: String?, spice: Int?): List<BookResponseDTO> {
         return bookRepository.findByTitleContainingIgnoreCaseAndCategoryNameContainingIgnoreCaseAndSpiceGreaterThanEqual(title ?: "", category?: "", spice ?: 0).map { BookResponseDTO(it.id!!, it.title,
-            it.category?.toCategoryResponseDTO(), it.pages, it.spice) };
+            it.category?.toCategoryBookResponseDTO(), it.pages, it.spice) };
     }
 
     fun getBookById(bookId: UUID): BookResponseDTO {
@@ -44,7 +44,7 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
             .orElseThrow { BookNotFoundException("No book found with id $bookId") }
 
         return book.let {
-            BookResponseDTO(it.id!!, it.title, it.category?.toCategoryResponseDTO(), it.pages, it.spice)
+            BookResponseDTO(it.id!!, it.title, it.category?.toCategoryBookResponseDTO(), it.pages, it.spice)
         }
     }
 
@@ -80,11 +80,11 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
         val updatedBook = bookRepository.save(book);
 
         return updatedBook.let {
-            BookResponseDTO(it.id!!, it.title, it.category?.toCategoryResponseDTO(), it.pages, it.spice)
+            BookResponseDTO(it.id!!, it.title, it.category?.toCategoryBookResponseDTO(), it.pages, it.spice)
         }
     }
 
 
-    private fun CategoryEntity.toCategoryResponseDTO(): CategoryResponseDTO =
-        CategoryResponseDTO(this.id!!, this.name, 0)
+    private fun CategoryEntity.toCategoryBookResponseDTO(): CategoryBookResponseDTO =
+        CategoryBookResponseDTO(this.id!!, this.name)
 }

@@ -9,7 +9,7 @@ data class BookResponseDTO(
     val id: UUID,
     @Schema(example = "Twisted lies")
     val title: String,
-    val category: CategoryResponseDTO?,
+    val category: CategoryBookResponseDTO?,
     @Schema(example = "350")
     val pages: Int?,
     @field:Min(0) @field:Max(5)
