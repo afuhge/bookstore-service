@@ -86,5 +86,5 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
 
 
     private fun CategoryEntity.toCategoryResponseDTO(): CategoryResponseDTO =
-        CategoryResponseDTO(this.id!!, this.name, null)
+        CategoryResponseDTO(this.id!!, this.name, 0)
 }

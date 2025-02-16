@@ -8,5 +8,6 @@ data class CategoryResponseDTO(
     val id: UUID,
     @Schema(example = "Roman")
     val name: String,
-    val books: MutableList<BookResponseDTO>? = null,
+    @Schema(example = "1")
+    val booksCount: Int = 0,
 )

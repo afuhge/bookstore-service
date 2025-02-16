@@ -2,7 +2,7 @@
 
 CREATE BOOK:
 curl -i \
--d '{"title":"Twisted lies", "pages": 525, "spice": 3, "categoryId": "1375da4b-9b00-48f2-96b8-48395984b385"}' \
+-d '{"title":"Twisted lies", "pages": 525, "spice": 3, "categoryId": "97d31af3-01ed-4f37-8f66-2dfd9468dd4a"}' \
 -H "Content-Type: application/json" \
 -X POST "http://localhost:8080/api/v1/books"
 
@@ -33,7 +33,7 @@ curl -i \
 -X POST http://localhost:8080/api/v1/categories
 
 GET category:
-curl -i -X GET "http://localhost:8080/api/v1/categories/<id>""
+curl -i -X GET "http://localhost:8080/api/v1/categories/<id>"
 
 GET ALL categories:
 curl -i -X GET "http://localhost:8080/api/v1/categories"

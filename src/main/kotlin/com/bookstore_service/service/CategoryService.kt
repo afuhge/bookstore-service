@@ -1,9 +1,7 @@
 package com.bookstore_service.service
 
-import com.bookstore_service.dto.BookResponseDTO
 import com.bookstore_service.dto.CategoryCreateRequestDTO
 import com.bookstore_service.dto.CategoryResponseDTO
-import com.bookstore_service.entity.BookEntity
 import com.bookstore_service.entity.CategoryEntity
 import com.bookstore_service.exceptions.CategoryNotFoundException
 import com.bookstore_service.repository.BookRepository
@@ -31,13 +29,12 @@ class CategoryService (val categoryRepository : CategoryRepository, val bookRepo
         val category = categoryRepository.findById(id)
             .orElseThrow { CategoryNotFoundException("No category found with id $id") }
         val books = bookRepository.findAllByCategoryId(category.id!!)
-        return category.let { CategoryResponseDTO(it.id!!, it.name,  books.map{ book -> book.toBookResponseDTO() }.toMutableList()) }
+        return category.let { CategoryResponseDTO(it.id!!, it.name,  books.size) }
     }
 
     fun getAllCategories(): List<CategoryResponseDTO> {
         return categoryRepository.findAll().map { category ->
-            val books = category.books.map { book -> book.toBookResponseDTO() }
-            CategoryResponseDTO(category.id!!, category.name, books.toMutableList()) }
+            CategoryResponseDTO(category.id!!, category.name, category.books.size) }
     }
 
     fun deleteCategory(id: UUID) {
@@ -79,9 +76,6 @@ class CategoryService (val categoryRepository : CategoryRepository, val bookRepo
        category.apply { name = updateRequest.name }
        val categoryEntity = categoryRepository.save(category)
 
-       return CategoryResponseDTO(categoryEntity.id!!, categoryEntity.name, categoryEntity.books.map{ book -> book.toBookResponseDTO() }.toMutableList());
+       return CategoryResponseDTO(categoryEntity.id!!, categoryEntity.name, categoryEntity.books.size);
     }
-
-    private fun BookEntity.toBookResponseDTO(): BookResponseDTO =
-        BookResponseDTO(this.id!!, this.title, null, this.pages, this.spice)
 }
