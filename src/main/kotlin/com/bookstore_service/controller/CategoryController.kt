@@ -2,6 +2,7 @@ package com.bookstore_service.controller
 
 import com.bookstore_service.dto.BookResponseDTO
 import com.bookstore_service.dto.CategoryCreateRequestDTO
+import com.bookstore_service.dto.CategoryPaginatedResponseDTO
 import com.bookstore_service.dto.CategoryResponseDTO
 import com.bookstore_service.exceptions.CategoryNotFoundException
 import com.bookstore_service.service.CategoryService
@@ -82,15 +83,17 @@ class CategoryController (val categoryService: CategoryService){
             Content(
                 mediaType = "application/json",
                 array = ArraySchema(
-                    schema = Schema(implementation = CategoryResponseDTO::class)
+                    schema = Schema(implementation = CategoryPaginatedResponseDTO::class)
                 )
             )
         ]
     )
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getAllCategories(): List<CategoryResponseDTO> =
-         categoryService.getAllCategories();
+    fun getAllCategories(@Parameter(name = "page", description = "Current page", example = "1") @RequestParam(required = false, defaultValue = "1") page: String = "1",
+                         @Parameter(name = "pageSize", description = "Page size", example = "10" ) @RequestParam(required = false, defaultValue = "10") pageSize: String = "10",
+                         @Parameter(name = "order", description = "Sort order", example = "asc") @Schema(allowableValues = ["asc", "desc"]) @RequestParam(required = false, defaultValue = "asc") order: String = "asc"): CategoryPaginatedResponseDTO =
+         categoryService.getAllCategories(page, pageSize, order);
 
     @Operation(summary = "Delete a category by its id")
     @ApiResponses(value = [

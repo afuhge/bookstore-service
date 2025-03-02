@@ -1,14 +1,14 @@
 package com.bookstore_service.service
 
-import com.bookstore_service.dto.BookCreateRequestDTO
-import com.bookstore_service.dto.BookResponseDTO
-import com.bookstore_service.dto.CategoryBookResponseDTO
+import com.bookstore_service.dto.*
 import com.bookstore_service.entity.BookEntity
 import com.bookstore_service.entity.CategoryEntity
 import com.bookstore_service.exceptions.BookNotFoundException
 import com.bookstore_service.exceptions.CategoryNotFoundException
 import com.bookstore_service.repository.BookRepository
 import com.bookstore_service.repository.CategoryRepository
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -34,9 +34,26 @@ class BookService (val bookRepository: BookRepository, val categoryRepository: C
         }
     }
 
-    fun getAllBooks(title: String?, category: String?, spice: Int?): List<BookResponseDTO> {
-        return bookRepository.findByTitleContainingIgnoreCaseAndCategoryNameContainingIgnoreCaseAndSpiceGreaterThanEqual(title ?: "", category?: "", spice ?: 0).map { BookResponseDTO(it.id!!, it.title,
-            it.category?.toCategoryBookResponseDTO(), it.pages, it.spice) };
+    fun getAllBooks(title: String?, category: String?, spice: Int?, page: String, pageSize: String, order: String, orderBy: String): BookPaginatedResponseDTO {
+        val pageNumber = page.toInt()
+        val size = pageSize.toInt()
+        val sortDirection = if (order.equals("asc", ignoreCase = true)) Sort.Direction.ASC else Sort.Direction.DESC
+        val sortProperty = if (orderBy == "category") "category.name" else orderBy
+        val pageable = PageRequest.of(pageNumber - 1, size, sortDirection, sortProperty)
+
+        val bookPage = bookRepository.findByTitleContainingIgnoreCaseAndCategoryNameContainingIgnoreCaseAndSpiceGreaterThanEqual(
+            title ?: "", category ?: "", spice ?: 0, pageable
+        )
+
+        return BookPaginatedResponseDTO(
+            data = bookPage.content.map {
+                BookResponseDTO(it.id!!, it.title, it.category?.toCategoryBookResponseDTO(), it.pages, it.spice)
+            },
+            pageNumber = bookPage.number + 1, // Convert zero-based index to one-based
+            pageSize = bookPage.size,
+            totalEntries = bookPage.totalElements.toInt(),
+            totalPages = bookPage.totalPages
+        )
     }
 
     fun getBookById(bookId: UUID): BookResponseDTO {

@@ -1,6 +1,7 @@
 package com.bookstore_service.service
 
 import com.bookstore_service.dto.CategoryCreateRequestDTO
+import com.bookstore_service.dto.CategoryPaginatedResponseDTO
 import com.bookstore_service.dto.CategoryResponseDTO
 import com.bookstore_service.entity.CategoryEntity
 import com.bookstore_service.exceptions.CategoryNotFoundException
@@ -8,6 +9,8 @@ import com.bookstore_service.repository.BookRepository
 import com.bookstore_service.repository.CategoryRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 
 
 @Service
@@ -32,9 +35,23 @@ class CategoryService (val categoryRepository : CategoryRepository, val bookRepo
         return category.let { CategoryResponseDTO(it.id!!, it.name,  books.size) }
     }
 
-    fun getAllCategories(): List<CategoryResponseDTO> {
-        return categoryRepository.findAll().map { category ->
-            CategoryResponseDTO(category.id!!, category.name, category.books.size) }
+    fun getAllCategories(page: String, pageSize: String, order: String): CategoryPaginatedResponseDTO {
+        val pageNumber = page.toInt()
+        val size = pageSize.toInt()
+        val sortDirection = if (order.equals("asc", ignoreCase = true)) Sort.Direction.ASC else Sort.Direction.DESC
+        val pageable = PageRequest.of(pageNumber - 1, size, sortDirection, "name")
+
+        val categoryPage = categoryRepository.findAll(pageable)
+
+        return CategoryPaginatedResponseDTO(
+            data = categoryPage.content.map { category ->
+                CategoryResponseDTO(category.id!!, category.name, category.books.size)
+            },
+            pageNumber = categoryPage.number + 1, // Spring Page numbers are 0-based
+            pageSize = categoryPage.size,
+            totalEntries = categoryPage.totalElements.toInt(),
+            totalPages = categoryPage.totalPages
+        )
     }
 
     fun deleteCategory(id: UUID) {

@@ -1,6 +1,7 @@
 package com.bookstore_service.controller
 
 import com.bookstore_service.dto.BookCreateRequestDTO
+import com.bookstore_service.dto.BookPaginatedResponseDTO
 import com.bookstore_service.dto.BookResponseDTO
 import com.bookstore_service.exceptions.BookNotFoundException
 import com.bookstore_service.exceptions.CategoryNotFoundException
@@ -95,15 +96,23 @@ class BookController (val bookService: BookService){
             Content(
                 mediaType = "application/json",
                 array = ArraySchema(
-                    schema = Schema(implementation = BookResponseDTO::class)
+                    schema = Schema(implementation = BookPaginatedResponseDTO::class)
                 )
             )
         ]
     )
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    fun getAllBooks(@Parameter(name = "title", description = "Book title", example = "Twisted lies" ) @RequestParam(required = false) title: String?, @Parameter(name = "category", description = "Category name", example = "Roman" ) @RequestParam(required = false) category: String?, @Parameter(name = "spice", description = "How spicy this book is", example = "3" ) @RequestParam(required = false)  @Min(0) @Max(5) spice: Int?): List<BookResponseDTO> =
-        bookService.getAllBooks(title, category, spice)
+    fun getAllBooks(
+        @Parameter(name = "title", description = "Book title", example = "Twisted lies" ) @RequestParam(required = false) title: String?,
+        @Parameter(name = "category", description = "Category name", example = "Roman" ) @RequestParam(required = false) category: String?,
+        @Parameter(name = "spice", description = "How spicy this book is", example = "3" ) @RequestParam(required = false)  @Min(0) @Max(5) spice: Int?,
+        @Parameter(name = "page", description = "Current page", example = "1") @RequestParam(required = false, defaultValue = "1") page: String = "1",
+        @Parameter(name = "pageSize", description = "Page size", example = "10" ) @RequestParam(required = false, defaultValue = "10") pageSize: String = "10",
+        @Parameter(name = "order", description = "Sort order", example = "asc") @Schema(allowableValues = ["asc", "desc"]) @RequestParam(required = false, defaultValue = "asc") order: String = "asc",
+        @Parameter(name = "orderBy", description = "Order by field", example = "title") @Schema(allowableValues = ["title", "category", "pages", "spice"]) @RequestParam(required = false, defaultValue = "title") orderBy: String = "asc",
+    ): BookPaginatedResponseDTO =
+        bookService.getAllBooks(title, category, spice, page, pageSize, order, orderBy)
 
 
     @Operation(summary = "Delete a book by its id")
